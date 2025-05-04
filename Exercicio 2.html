@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercicio 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            cursor: pointer;
+        }
+        .cell.taken {
+            pointer-events: none;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="board" id="board"></div>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const message = document.getElementById('message');
+        let currentPlayer = 'X';
+        let gameActive = true;
+        const gameState = Array(9).fill(null);
+
+        const winningConditions = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        function checkWin() {
+            for (const condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                    return gameState[a];
+                }
+            }
+            return null;
+        }
+
+        function checkDraw() {
+            return gameState.every(cell => cell !== null);
+        }
+
+        function handleCellClick(e) {
+            const cellIndex = e.target.dataset.index;
+
+            if (!gameActive || gameState[cellIndex]) return;
+
+            gameState[cellIndex] = currentPlayer;
+            e.target.textContent = currentPlayer;
+            e.target.classList.add('taken');
+
+            const winner = checkWin();
+            if (winner) {
+                message.textContent = `Jogador ${winner} venceu!`;
+                gameActive = false;
+                return;
+            }
+
+            if (checkDraw()) {
+                message.textContent = 'Empate!';
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            message.textContent = `Vez do jogador ${currentPlayer}`;
+        }
+
+        function createBoard() {
+            board.innerHTML = '';
+            gameState.fill(null);
+            gameActive = true;
+            currentPlayer = 'X';
+            message.textContent = `Vez do jogador ${currentPlayer}`;
+
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleCellClick);
+                board.appendChild(cell);
+            }
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>

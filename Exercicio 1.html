@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercicio 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .valid {
+            border: 2px solid green;
+        }
+        .invalid {
+            border: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulário de Registro</h1>
+    <form id="registrationForm" novalidate>
+        <div class="form-group">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+            <div class="error" id="nameError"></div>
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            <div class="error" id="emailError"></div>
+        </div>
+        <div class="form-group">
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+            <div class="error" id="passwordError"></div>
+        </div>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+
+        function validateName() {
+            const name = nameInput.value.trim();
+            if (name === '') {
+                nameError.textContent = 'O nome é obrigatório.';
+                nameInput.classList.add('invalid');
+                nameInput.classList.remove('valid');
+                return false;
+            } else {
+                nameError.textContent = '';
+                nameInput.classList.add('valid');
+                nameInput.classList.remove('invalid');
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email === '') {
+                emailError.textContent = 'O e-mail é obrigatório.';
+                emailInput.classList.add('invalid');
+                emailInput.classList.remove('valid');
+                return false;
+            } else if (!emailRegex.test(email)) {
+                emailError.textContent = 'Por favor, insira um e-mail válido.';
+                emailInput.classList.add('invalid');
+                emailInput.classList.remove('valid');
+                return false;
+            } else {
+                emailError.textContent = '';
+                emailInput.classList.add('valid');
+                emailInput.classList.remove('invalid');
+                return true;
+            }
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value.trim();
+            if (password === '') {
+                passwordError.textContent = 'A senha é obrigatória.';
+                passwordInput.classList.add('invalid');
+                passwordInput.classList.remove('valid');
+                return false;
+            } else if (password.length < 6) {
+                passwordError.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+                passwordInput.classList.add('invalid');
+                passwordInput.classList.remove('valid');
+                return false;
+            } else {
+                passwordError.textContent = '';
+                passwordInput.classList.add('valid');
+                passwordInput.classList.remove('invalid');
+                return true;
+            }
+        }
+
+        nameInput.addEventListener('input', validateName);
+        emailInput.addEventListener('input', validateEmail);
+        passwordInput.addEventListener('input', validatePassword);
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+
+            if (isNameValid && isEmailValid && isPasswordValid) {
+                alert('Registro bem-sucedido!');
+                form.reset();
+                nameInput.classList.remove('valid');
+                emailInput.classList.remove('valid');
+                passwordInput.classList.remove('valid');
+            }
+        });
+    </script>
+</body>
+</html>
